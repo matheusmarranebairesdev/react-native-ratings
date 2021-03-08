@@ -9,6 +9,7 @@ import {
 
 // RATING IMAGES WITH STATIC BACKGROUND COLOR (white)
 const STAR_IMAGE = require('./images/star.png');
+const STAR_OUTLINE_IMAGE = require('./images/star-outline.png');
 const HEART_IMAGE = require('./images/heart.png');
 const ROCKET_IMAGE = require('./images/rocket.png');
 const BELL_IMAGE = require('./images/bell.png');
@@ -16,6 +17,7 @@ const BELL_IMAGE = require('./images/bell.png');
 const TYPES = {
   star: {
     source: STAR_IMAGE,
+    sourceOutline: STAR_OUTLINE_IMAGE,
     color: '#f1c40f',
     backgroundColor: 'white'
   },
@@ -154,10 +156,12 @@ export default class SwipeRating extends Component {
   renderRatings() {
     const { imageSize, ratingCount, type, tintColor } = this.props;
     const source = TYPES[type].source;
+    const outline = TYPES[type].sourceOutline;
 
     return times(ratingCount, index => (
       <View key={index} style={styles.starContainer}>
         <Image source={source} style={{ width: imageSize, height: imageSize, tintColor }} />
+        {outline && <Image source={outline} style={{width: imageSize, height: imageSize, position: 'absolute'}}/>}
       </View>
     ));
   }
@@ -238,17 +242,17 @@ export default class SwipeRating extends Component {
 
     return (
       this.state.display ?
-      <View pointerEvents={readonly ? 'none' : 'auto'} style={style}>
-        {showRating && this.displayCurrentRating()}
-        <View style={styles.starsWrapper} {...this.state.panResponder.panHandlers}>
-          <View style={styles.starsInsideWrapper}>
-            <Animated.View style={this.getPrimaryViewStyle()} />
-            <Animated.View style={this.getSecondaryViewStyle()} />
+        <View pointerEvents={readonly ? 'none' : 'auto'} style={style}>
+          {showRating && this.displayCurrentRating()}
+          <View style={styles.starsWrapper} {...this.state.panResponder.panHandlers}>
+            <View style={styles.starsInsideWrapper}>
+              <Animated.View style={this.getPrimaryViewStyle()} />
+              <Animated.View style={this.getSecondaryViewStyle()} />
+            </View>
+            {this.renderRatings()}
           </View>
-          {this.renderRatings()}
-        </View>
-      </View> :
-      null
+        </View> :
+        null
     );
   }
 
